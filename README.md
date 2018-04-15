@@ -44,9 +44,9 @@ Running via Spring preloader in process 57
 
 Puedes ver que se crearon 4 archivos:
 
-* `db/migrate/<timestamp>_create_artists.rb` donde está la migración (una clase) que ejecutará los cambios necesarios en la base de datos para poder guardar artistas.
-* `app/models/artist.rb` que tiene la clase `Artist` de nuestro modelo.
-* `test/fixtures/artists.yml` y `test/models/artist_test.rb` para poder testear nuestro modelo. Veremos *testing* más adelante en el semestre.
+* [`db/migrate/<timestamp>_create_artists.rb`](./db/migrate/20180415170500_create_artists.rb) donde está la migración (una clase) que ejecutará los cambios necesarios en la base de datos para poder guardar artistas.
+* [`app/models/artist.rb`](./app/models/artist.rb) que tiene la clase `Artist` de nuestro modelo.
+* [`test/fixtures/artists.yml`](./test/fixtures/artists.yml) y [`test/models/artist_test.rb`](./test/models/artist_test.rb) para poder testear nuestro modelo. Veremos *testing* más adelante en el semestre.
 
 > Si te molesta escribir mucho `docker-compose exec web`, puedes crear un alias en tu terminal de la siguiente forma:
 > 
@@ -70,9 +70,9 @@ Como un álbum pertencece a un solo artista (en nuestro proyecto simplificado) y
 
 Primero, en `Artist`, ejecutaremos el método `has_many`.
 
-```ruby
-# app/models/artist.rb
+[`app/models/artist.rb`](./app/models/artist.rb)
 
+```ruby
 class Artist < ApplicationRecord
   has_many :albums, dependent: :destroy
 end
@@ -86,9 +86,9 @@ Puedes notar 2 cosas:
 
 Segundo, en `Album` debemos revisar que se ejecute `belongs_to`, para indicar el sentido opuesto de esta asociación entre artistas y álbumes. Esto puede haber sido agregado por Rails. Entonces, el modelo debiese quedar así:
 
-```ruby
-# app/models/album.rb
+[`app/models/album.rb`](./app/models/album.rb)
 
+```ruby
 class Album < ApplicationRecord
   belongs_to :artist
 end
@@ -106,18 +106,18 @@ docker-compose exec web rails g model Song name:string length:integer album:refe
 
 De la misma forma anterior, agregaremos su asociación con álbum en los modelos.
 
-```ruby
-# app/models/song.rb
+[`app/models/song.rb`](./app/models/song.rb)
 
+```ruby
 class Song < ApplicationRecord
   belongs_to :album
 end
 
 ```
 
-```ruby
-# app/models/album
+[`app/models/album.rb`](./app/models/album.rb)
 
+```ruby
 class Album < ApplicationRecord
   belongs_to :artist
   has_many :songs, dependent: :destroy
@@ -131,9 +131,9 @@ Bacán, hasta ahora tenemos todos los modelos que queremos. Pero, ¿y la base de
 
 Por ejemplo, veamos la migración de los álbumes.
 
-```ruby
-# db/migrate/<timestamp>_create_albums.rb
+[`db/migrate/<timestamp>_create_albums.rb`](./db/migrate/20180415171230_create_albums.rb)
 
+```ruby
 class CreateAlbums < ActiveRecord::Migration[5.1]
   def change
     create_table :albums do |t|
