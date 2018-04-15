@@ -12,7 +12,9 @@ Por favor revisa [la guía de setup de la primera ayudantía](https://github.com
 
 En esta ayudantía crearemos 3 modelos con sus respectivas vistas y controladores. Los 3 modelos se enmarcan en el [proyecto del semestre pasado](https://github.com/IIC2143-2017/syllabus/blob/master/Proyecto/Enunciado%20Proyecto%20Semestral.pdf).
 
-### Artista
+### Modelos
+
+#### Artista
 
 Nuestro primer modelo será un Artista de música. Por ahora nos basta que tenga solo un nombre:
 
@@ -54,7 +56,7 @@ Puedes ver que se crearon 4 archivos:
 >
 >Ahora se puede escribir `dexec` en vez de `docker-compose exec web` en todos los comandos. En verdad, el nombre del comando puede ser lo que tú quieras, pero preocúpate de que no sea algún comando ya existente.
 
-### Álbum
+#### Álbum
 
 Un álbum tendrá un nombre, un año de lanzamiento y una referencia al artista al que pertenece
 
@@ -94,7 +96,7 @@ end
 
 Puedes notar que `:artist` está en singular.
 
-### Canción
+#### Canción
 
 Ahora agregaremos nuestro último modelo. Una canción tendrá un nombre, una duración y pertenecerá a un álbum.
 
@@ -122,3 +124,83 @@ class Album < ApplicationRecord
 end
 
 ```
+
+### Migraciones
+
+Bacán, hasta ahora tenemos todos los modelos que queremos. Pero, ¿y la base de datos?. Para ejecutar cambios en la base de datos usamos las migraciones y debemos correrlas.
+
+Por ejemplo, veamos la migración de los álbumes.
+
+```ruby
+# db/migrate/<timestamp>_create_albums.rb
+
+class CreateAlbums < ActiveRecord::Migration[5.1]
+  def change
+    create_table :albums do |t|
+      t.string :name
+      t.integer :year
+      t.references :artist, foreign_key: true
+
+      t.timestamps
+    end
+  end
+end
+
+```
+
+Podemos notar que esta migración creará una tabla llamada `albums`. El bloque (`do ... end`) que recibe esta función indica qué cosas se harán con esa tabla (que está representada con el argumento `t`). Por ahora la tabla tendrá 3 columnas explícitas: `name`, `year` y `artist` (que corresponde al id de algún artista en su propia tabla, por ello se indica que es una `foreign_key`). Finalmente, esta tabla también tendrá columnas con los *timestamps* de creación y actualización.
+
+Es importante mencionar que las migraciones tienen dos sentidos: up y down. 
+
+* Up indica los cambios que se ejecutarán en la base de datos y se definen en el método `up` de la migración.
+* Down indica los cambios para deshacer lo hecho por Up y se definen en el método `down`.
+
+En Rails también se puede definir un solo método `change` que es obvio cómo revertir, y eso es lo que tenemos en nuestras migraciones por ahora.
+
+Ahora, ejecutemos los cambios:
+
+```bash
+docker-compose exec web rails db:migrate
+```
+
+El *output* debiese ser similar a éste:
+
+```
+== 20180415170500 CreateArtists: migrating ====================================
+-- create_table(:artists)
+   -> 0.0190s
+== 20180415170500 CreateArtists: migrated (0.0200s) ===========================
+
+== 20180415171230 CreateAlbums: migrating =====================================
+-- create_table(:albums)
+   -> 0.0256s
+== 20180415171230 CreateAlbums: migrated (0.0271s) ============================
+
+== 20180415172735 CreateSongs: migrating ======================================
+-- create_table(:songs)
+   -> 0.0303s
+== 20180415172735 CreateSongs: migrated (0.0305s) =============================
+```
+
+Podemos revisar el estado de nuestras migraciones en cualquier momento con
+
+```
+docker-compose exec web rails db:migrate:status
+```
+
+y obtener una tabla como la siguiente:
+
+```
+database: example-1_development
+
+ Status   Migration ID    Migration Name
+--------------------------------------------------
+   up     20180415170500  Create artists
+   up     20180415171230  Create albums
+   up     20180415172735  Create songs
+
+```
+
+Cuando creemos nuevos modelos con sus migraciones, pero no las ejecutemos, éstas apareceran en esta tabla pero con *status* `down`.
+
+Una última cosa. Cada vez que se corre una migración, se actualiza el archivo `db/schema.rb`. Este archivo tiene todo lo necesario para replicar la misma estructura de tablas en una nueva base de datos.
