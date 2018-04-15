@@ -2,6 +2,8 @@
 
 Usaremos esta aplicación Ruby on Rails para mostrar ejemplos básicos en la ayudantía. Se separarán los pasos en commits para que puedan revisar el historial de la aplicación.
 
+Por simplicidad, casi todo el desarrollo de este proyecto se hará en la rama `master`. En su proyecto, preocúpese de crear una rama por *feature* desde la rama `development` y de no trabajar directamente en `master`.
+
 Si encuentras algún error en este proyecto (en particular en este README), por favor haz un *fork* de este repositorio y luego una *pull request* corrigiéndolo.
 
 ## Ayudantía 1: Setup
@@ -204,3 +206,87 @@ database: example-1_development
 Cuando creemos nuevos modelos con sus migraciones, pero no las ejecutemos, éstas apareceran en esta tabla pero con *status* `down`.
 
 Una última cosa. Cada vez que se corre una migración, se actualiza el archivo [`db/schema.rb`](./db/schema.rb). Este archivo tiene todo lo necesario para replicar la misma estructura de tablas en una nueva base de datos.
+
+### Una pausa: La consola de Rails
+
+Ahora que tenemos clases en nuestra aplicación podemos jugar con ellas. Para ello, abramos la consola de Rails donde podremos crear instancias de nuestros modelos.
+
+Para abrir la consola puedes ejecutar
+
+```
+docker-compose exec web rails console
+```
+
+> De la misma forma que con `generate`, puedes abreviar `console` con una `c`. Luego, otra forma de abrir la consola es `docker-compose exec web rails c`.
+ 
+La consola se ve más o menos así:
+
+```ruby
+Running via Spring preloader in process 213
+Loading development environment (Rails 5.1.5)
+irb(main):001:0>
+```
+
+Para no saturar nuestros *outputs*, de ahora en adelante se mostrarán los *prompts* en esta guía como `>>`, y las ejecuciones como `=>`.
+
+Entonces, creemos un artista con un álbum y una canción.
+
+```ruby
+>> our_artist = Artist.new(name: 'Mazapan')
+=> #<Artist id: nil, name: "Mazapan", created_at: nil, updated_at: nil>
+>> our_artist.save
+   (0.9ms)  BEGIN
+  SQL (1.4ms)  INSERT INTO "artists" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING"id"  [["name", "Mazapan"], ["created_at", "2018-04-15 18:11:59.022259"], ["updated_at", "2018-04-15 18:11:59.022259"]]
+   (2.8ms)  COMMIT
+=> true
+```
+
+El método `new` crea un nuevo artista, pero no lo guarda inmediatamente en la base de datos. Puedes notar que éste solo se guarda cuando ejecutamos `save`. Si quieres crear y guardar inmediatamente, puedes usar el método `create`.
+
+Ahora, creemos un álbum asociado a este artista y una canción del álbum:
+
+```ruby
+>> our_album = Album.create(artist: our_artist, name: 'A La Ronda', year: '1982')
+   (0.5ms)  BEGIN
+  SQL (5.7ms)  INSERT INTO "albums" ("name", "year", "artist_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["name", "A La Ronda"], ["year", 1982], ["artist_id", 1], ["created_at", "2018-04-15 18:15:02.105574"], ["updated_at", "2018-04-15 18:15:02.105574"]]
+   (6.4ms)  COMMIT
+=> #<Album id: 1, name: "A La Ronda", year: 1982, artist_id: 1, created_at: "2018-04-15 18:15:02", updated_at: "2018-04-15 18:15:02">
+>> our_song = Song.create(name: 'Una Cuncuna', length: 105, album: our_album)
+   (0.4ms)  BEGIN
+  SQL (2.8ms)  INSERT INTO "songs" ("name", "length", "album_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["name", "Una Cuncuna"], ["length", 105], ["album_id", 1], ["created_at", "2018-04-15 18:16:48.768674"], ["updated_at", "2018-04-15 18:16:48.768674"]]
+   (3.3ms)  COMMIT
+=> #<Song id: 1, name: "Una Cuncuna", length: 105, album_id: 1, created_at: "2018-04-15 18:16:48", updated_at: "2018-04-15 18:16:48">
+```
+
+Ahora, podemos ver todos los artistas:
+
+```ruby
+>> Artist.all
+  Artist Load (3.4ms)  SELECT  "artists".* FROM "artists" LIMIT $1  [["LIMIT", 11]]
+=> #<ActiveRecord::Relation [#<Artist id: 1, name: "Mazapan", created_at: "2018-04-15 18:11:59", updated_at: "2018-04-15 18:11:59">]>
+```
+
+Podemos ver todos los álbumes de un artista:
+
+```ruby
+>> our_artist.albums
+  Album Load (0.8ms)  SELECT  "albums".* FROM "albums" WHERE "albums"."artist_id" = $1 LIMIT $2  [["artist_id", 1], ["LIMIT", 11]]
+=> #<ActiveRecord::Associations::CollectionProxy [#<Album id: 1, name: "A La Ronda", year: 1982, artist_id: 1, created_at: "2018-04-15 18:15:02", updated_at: "2018-04-15 18:15:02">]>
+```
+
+Podemos buscar alguna canción en particular por alguno de sus atributos.
+
+```ruby
+>> Song.find_by(length: 105)
+  Song Load (0.7ms)  SELECT  "songs".* FROM "songs" WHERE "songs"."length" = $1 LIMIT $2  [["length", 105], ["LIMIT", 1]]
+=> #<Song id: 1, name: "Una Cuncuna", length: 105, album_id: 1, created_at: "2018-04-15 18:16:48", updated_at: "2018-04-15 18:16:48">
+```
+
+O buscar varias instancias de acuerdo a alguno de sus atributos:
+
+```ruby
+>> Song.where(album: our_album)
+  Song Load (3.1ms)  SELECT  "songs".* FROM "songs" WHERE "songs"."album_id" = 1 LIMIT $1  [["LIMIT", 11]]
+=> #<ActiveRecord::Relation [#<Song id: 1, name: "Una Cuncuna", length: 105, album_id: 1, created_at: "2018-04-15 18:16:48", updated_at: "2018-04-15 18:16:48">, #<Song id: 2, name: "La Señora Mariposa", length: 76, album_id: 1, created_at: "2018-04-15 18:24:09", updated_at: "2018-04-15 18:24:09">]>
+
+```
