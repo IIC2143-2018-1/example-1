@@ -2,6 +2,8 @@
 
 Usaremos esta aplicación Ruby on Rails para mostrar ejemplos básicos en la ayudantía. Se separarán los pasos en commits para que puedan revisar el historial de la aplicación.
 
+Si encuentras algún error en este proyecto (en particular en este README), por favor haz un *fork* de este repositorio y luego una *pull request* corrigiéndolo.
+
 ## Ayudantía 1: Setup
 
 Por favor revisa [la guía de setup de la primera ayudantía](https://github.com/IIC2143-2018-1/syllabus-1/blob/master/ayudantias/ayudantia01_setup.pdf).
@@ -91,3 +93,32 @@ end
 ```
 
 Puedes notar que `:artist` está en singular.
+
+### Canción
+
+Ahora agregaremos nuestro último modelo. Una canción tendrá un nombre, una duración y pertenecerá a un álbum.
+
+```bash
+docker-compose exec web rails g model Song name:string length:integer album:references
+```
+
+De la misma forma anterior, agregaremos su asociación con álbum en los modelos.
+
+```ruby
+# app/models/song.rb
+
+class Song < ApplicationRecord
+  belongs_to :album
+end
+
+```
+
+```ruby
+# app/models/album
+
+class Album < ApplicationRecord
+  belongs_to :artist
+  has_many :songs, dependent: :destroy
+end
+
+```
