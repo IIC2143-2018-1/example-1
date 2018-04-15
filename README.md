@@ -203,4 +203,4 @@ database: example-1_development
 
 Cuando creemos nuevos modelos con sus migraciones, pero no las ejecutemos, éstas apareceran en esta tabla pero con *status* `down`.
 
-Una última cosa. Cada vez que se corre una migración, se actualiza el archivo `db/schema.rb`. Este archivo tiene todo lo necesario para replicar la misma estructura de tablas en una nueva base de datos.
+Una última cosa. Cada vez que se corre una migración, se actualiza el archivo [`db/schema.rb`](./db/schema.rb). Este archivo tiene todo lo necesario para replicar la misma estructura de tablas en una nueva base de datos.
