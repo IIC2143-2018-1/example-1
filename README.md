@@ -50,4 +50,44 @@ Puedes ver que se crearon 4 archivos:
 >alias dexec='docker-compose exec web'
 >```
 >
->Ahora se puede escribir `dexec` en vez de `docker-compose exec web` en todos los comandos.
+>Ahora se puede escribir `dexec` en vez de `docker-compose exec web` en todos los comandos. En verdad, el nombre del comando puede ser lo que tú quieras, pero preocúpate de que no sea algún comando ya existente.
+
+### Álbum
+
+Un álbum tendrá un nombre, un año de lanzamiento y una referencia al artista al que pertenece
+
+```bash
+docker-compose run exec rails g model Album name:string year:integer artist:references
+```
+
+> Puedes notar que `generate` se puede abreviar con una `g`.
+
+Como un álbum pertencece a un solo artista (en nuestro proyecto simplificado) y un artista puede tener más de un álbum (a menos de que tenga solo un éxito 😥), tenemos que indicarle a nuestros modelos que están asociados entre ellos.
+
+Primero, en `Artist`, ejecutaremos el método `has_many`.
+
+```ruby
+# app/models/artist.rb
+
+class Artist < ApplicationRecord
+  has_many :albums, dependent: :destroy
+end
+
+```
+
+Puedes notar 2 cosas:
+
+1. El primer argumento de `has_many` está en plural.
+2. El segundo argumento `dependent: :destroy` está indicando que en caso de que un artista sea eliminado, sus álbumes también deben ser destruidos.
+
+Segundo, en `Album` debemos revisar que se ejecute `belongs_to`, para indicar el sentido opuesto de esta asociación entre artistas y álbumes. Esto puede haber sido agregado por Rails. Entonces, el modelo debiese quedar así:
+
+```ruby
+# app/models/album.rb
+
+class Album < ApplicationRecord
+  belongs_to :artist
+end
+```
+
+Puedes notar que `:artist` está en singular.
