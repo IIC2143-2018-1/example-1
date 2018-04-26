@@ -1,5 +1,5 @@
 class ArtistsController < ApplicationController
-  before_action :set_artist, only: [:show, :edit, :update, :destroy]
+  before_action :set_artist, only: %i[show edit update destroy]
 
   # GET /artists
   # GET /artists.json
@@ -9,8 +9,7 @@ class ArtistsController < ApplicationController
 
   # GET /artists/1
   # GET /artists/1.json
-  def show
-  end
+  def show; end
 
   # GET /artists/new
   def new
@@ -18,8 +17,7 @@ class ArtistsController < ApplicationController
   end
 
   # GET /artists/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /artists
   # POST /artists.json
@@ -62,13 +60,14 @@ class ArtistsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_artist
-      @artist = Artist.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def artist_params
-      params.fetch(:artist, {})
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_artist
+    @artist = Artist.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def artist_params
+    params.fetch(:artist, {})
+  end
 end

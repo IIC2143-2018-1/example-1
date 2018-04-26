@@ -5,40 +5,40 @@ class SongsControllerTest < ActionDispatch::IntegrationTest
     @song = songs(:one)
   end
 
-  test "should get index" do
+  test 'should get index' do
     get songs_url
     assert_response :success
   end
 
-  test "should get new" do
+  test 'should get new' do
     get new_song_url
     assert_response :success
   end
 
-  test "should create song" do
+  test 'should create song' do
     assert_difference('Song.count') do
-      post songs_url, params: { song: {  } }
+      post songs_url, params: { song: {} }
     end
 
     assert_redirected_to song_url(Song.last)
   end
 
-  test "should show song" do
+  test 'should show song' do
     get song_url(@song)
     assert_response :success
   end
 
-  test "should get edit" do
+  test 'should get edit' do
     get edit_song_url(@song)
     assert_response :success
   end
 
-  test "should update song" do
-    patch song_url(@song), params: { song: {  } }
+  test 'should update song' do
+    patch song_url(@song), params: { song: {} }
     assert_redirected_to song_url(@song)
   end
 
-  test "should destroy song" do
+  test 'should destroy song' do
     assert_difference('Song.count', -1) do
       delete song_url(@song)
     end

@@ -1,5 +1,5 @@
 class AlbumsController < ApplicationController
-  before_action :set_album, only: [:show, :edit, :update, :destroy]
+  before_action :set_album, only: %i[show edit update destroy]
 
   # GET /albums
   # GET /albums.json
@@ -9,8 +9,7 @@ class AlbumsController < ApplicationController
 
   # GET /albums/1
   # GET /albums/1.json
-  def show
-  end
+  def show; end
 
   # GET /albums/new
   def new
@@ -18,8 +17,7 @@ class AlbumsController < ApplicationController
   end
 
   # GET /albums/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /albums
   # POST /albums.json
@@ -62,13 +60,14 @@ class AlbumsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_album
-      @album = Album.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def album_params
-      params.fetch(:album, {})
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_album
+    @album = Album.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def album_params
+    params.fetch(:album, {})
+  end
 end
