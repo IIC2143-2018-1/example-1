@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  get 'user/info', to: 'users#info'
-
+  get 'me', to: 'users#info'
   devise_for :users
+
   root 'welcome#index'
 
   # get 'artists/:id', to: 'artists#show', as: 'cualquiercosa'
