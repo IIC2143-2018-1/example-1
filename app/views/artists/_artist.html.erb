@@ -1,0 +1,7 @@
+<tr>
+  <td><%= artist.name %></td>
+  <td><%= link_to 'Show', artist %></td>
+  <td><%= link_to 'Edit', edit_artist_path(artist) %></td>
+  <td><%= link_to 'Destroy', artist, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  <td><%= link_to 'Hide', '', data: {'js-hide-link' => true} %></td>
+</tr>

@@ -9,6 +9,9 @@ gem 'bootstrap', '~> 4.1.0'
 gem 'devise'
 gem 'filepicker-rails'
 gem 'jquery-rails'
+gem 'jquery-validation-rails'
+
+
 gem 'sprockets-rails', '>= 2.3.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

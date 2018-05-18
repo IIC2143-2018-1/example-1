@@ -5,6 +5,7 @@ class ArtistsController < ApplicationController
   # GET /artists.json
   def index
     @artists = Artist.all
+    @artist = Artist.new
   end
 
   # GET /artists/1
@@ -27,6 +28,7 @@ class ArtistsController < ApplicationController
     respond_to do |format|
       if @artist.save
         format.html { redirect_to @artist, notice: 'Artist was successfully created.' }
+        format.js
         format.json { render :show, status: :created, location: @artist }
       else
         format.html { render :new }
@@ -68,6 +70,6 @@ class ArtistsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def artist_params
-    params.fetch(:artist, {})
+    params.require(:artist).permit(:name)
   end
 end
