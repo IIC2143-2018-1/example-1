@@ -25,8 +25,6 @@ $(document).ready(function() {
     event.preventDefault(); 
   });
 
-
-
   $("#new_user").validate({
     rules: {
       "user[email]": {
@@ -42,19 +40,5 @@ $(document).ready(function() {
         equalTo: "#user_password"
       }
     },
-    messages: {
-      mail: {
-        required: "Email is required",
-        email: "Please enter a valid email address"
-      },
-      password: {
-        required: "Password is required",
-        minlength: "Password must be more than 6"
-      },
-      password_confirmation: {
-        required: "Password confirmation is required",
-        equalTo: "Password and password confirmation must be same"
-      }
-    }
   });
 });

@@ -32,6 +32,7 @@ class ArtistsController < ApplicationController
         format.json { render :show, status: :created, location: @artist }
       else
         format.html { render :new }
+        # PENDIENTE: Respuesta de error con AJAX
         format.json { render json: @artist.errors, status: :unprocessable_entity }
       end
     end
