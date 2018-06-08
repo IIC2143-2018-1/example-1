@@ -13,9 +13,7 @@ class ArtistsController < ApplicationController
   def show
     service = SpotifyApi.new
     first_artist = service.search_artists(@artist.name).first
-    puts first_artist
     @spotify_artist = service.get_artist(first_artist['id'])
-    puts @spotify_artist
   end
 
   # GET /artists/new

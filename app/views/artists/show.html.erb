@@ -6,8 +6,8 @@
 Genres: <%= @spotify_artist['genres'].reduce { |mem, n| "#{mem}, #{n}" } %>
 </p>
 
-<% if @spotify_artist['images'].length > 0 %>
-  <%= image_tag @spotify_artist['images'].first['url'] %>
+<% @spotify_artist['images'].each do |image| %>
+  <%= image_tag image['url'] %>
 <% end %>
 
 <br />
