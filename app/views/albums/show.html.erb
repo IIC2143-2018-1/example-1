@@ -1,4 +1,15 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_album_path(@album) %> |
-<%= link_to 'Back', albums_path %>
+<p>
+  <strong>Name:</strong>
+  <%= @album.name %>
+</p>
+
+<p>
+  <strong>Year:</strong>
+  <%= @album.year %>
+</p>
+
+<%= link_to 'Songs', artist_album_songs_path(@artist, @album) %> |
+<%= link_to 'Edit', edit_artist_album_path(@artist, @album) %> |
+<%= link_to 'Back', artist_albums_path(@artist) %>

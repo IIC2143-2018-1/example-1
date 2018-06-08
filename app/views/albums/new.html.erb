@@ -1,5 +1,5 @@
 <h1>New Album</h1>
 
-<%= render 'form', album: @album %>
+<%= render 'form', artist: @artist, album: @album %>
 
-<%= link_to 'Back', albums_path %>
+<%= link_to 'Back', artist_albums_path(@artist) %>
