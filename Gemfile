@@ -11,6 +11,7 @@ gem 'filepicker-rails'
 gem 'jquery-rails'
 gem 'jquery-validation-rails'
 
+gem 'httparty', '~> 0.16.2'
 
 gem 'sprockets-rails', '>= 2.3.2'
 
